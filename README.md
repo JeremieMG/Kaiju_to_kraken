@@ -6,7 +6,7 @@ Here is a project to convert a kaiju report file into a kraken report file.
 - Awk
 
 # Convert your file:
-To convert your kaiju file, you need to download as first the following scripts:
+To convert your kaiju file, you need to download as first the following scripts(available on https://github.com/JeremieMG/Kaiju_to_kraken):
 - kraken_maker.py
 - taxa_parser.awk
 
