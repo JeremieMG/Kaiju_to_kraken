@@ -10,7 +10,7 @@ To convert kaiju file, first you need to download the following scripts (availab
 - kraken_maker.py
 - taxa_parser.awk
 
-Secondly, you have to run this command to make these script executable:
+Secondly, to make this scripts executables, you have to run the hereafter command:
 ```
 chmod 755 [script]
 ```
