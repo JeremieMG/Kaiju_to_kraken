@@ -19,4 +19,4 @@ Finally, run this command to convert your kaiju report file into a kraken report
 ```
 ./kraken_maker.py [Kaiju_file] > [output]
 ```
-### Impotant note: Be sure that the both scripts are in the same folder.
+### Important note: Be sure that the both scripts are in the same folder.
