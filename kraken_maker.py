@@ -20,7 +20,8 @@ def loop(x, y):
     if main[x]:
         for element in main[x]:
             space = y
-            print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t",  "-\t", "unknow_ID\t", space * "  " + element
+            print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t",  
+            "-\t", "unknow_ID\t", space * "  " + element
             if main[element]:
                 space += 1
                 loop_2(element, space)
@@ -28,7 +29,8 @@ def loop(x, y):
 def loop_2(x, y):
     for element in main[x]:
         space = y
-        print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t", "-\t", "unknow_ID\t", space * "  " + element
+        print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t",
+        "-\t", "unknow_ID\t", space * "  " + element
         if main[element]:
             space += 1
             loop(element, space)
