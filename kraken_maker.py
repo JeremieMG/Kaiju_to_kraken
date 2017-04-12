@@ -10,17 +10,20 @@ os.popen("./taxa_parser.awk %s > /tmp/names_%s.txt"% (kaiju_file,my_id))
 main = {}
 secondary = {}
 tertiary = {}
+quaternary = {}
 main["main"] = []
 input_file = open(("/tmp/names_%s.txt" %my_id),"r")
 L = []
-
+tax_names = ["U","D","P","C","O","F","G","S"]
 #Functions needed
 
 def loop(x, y):
     if main[x]:
         for element in main[x]:
             space = y
-            print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t","-\t", "unknow_ID\t", space * "  " + element
+            rank_display = ''.join((quaternary[element]))
+            test = rank_display
+            print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + "unknow_ID\t" + space * "  " + element
             if main[element]:
                 space += 1
                 loop_2(element, space)
@@ -28,7 +31,8 @@ def loop(x, y):
 def loop_2(x, y):
     for element in main[x]:
         space = y
-        print sum(tertiary[element]),"\t", sum(secondary[element]),"\t", sum(secondary[element]),"\t","-\t", "unknow_ID\t", space * "  " + element
+        rank_display = ''.join(quaternary[element])
+        print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + "unknow_ID\t" + space * "  " + element
         if main[element]:
             space += 1
             loop(element, space)
@@ -42,13 +46,16 @@ def key(where, name):
 #Add the classification names, the number of reads and percentage into the right branch (key)
 for line in input_file:
     if not line.startswith("-") and not "unclassified\n" in line:
-        percent, reads, name = line.strip().split("\t")
+        percent, reads, rank, name = line.strip().split("\t")
         L.append(name.strip())
         if not name in secondary:
             secondary[name] = []
             tertiary[name] = []
+            quaternary[name] = []
         secondary[name].append(int(reads))
         tertiary[name].append(float(percent))
+        if quaternary[name] == []:
+            quaternary[name].append(tax_names[int(rank)])
     elif not "unclassified\n" in line:
         element = 1
         for line in L:
@@ -62,8 +69,8 @@ for line in input_file:
         L = []
     else:
         percent, reads, name = line.strip().split("\t")
-        print percent,"\t",reads,"\t",reads,"\t","U\t0\t",name
-        print percent,"\t",reads,"\t",reads,"\t","-\t1\troot"
+        print str(percent) + "\t" + str(reads) + "\t" + str(reads) + "\tU\t0\t" + name
+        print str(percent) + "\t" + str(reads) + "\t" + str(reads) + "\t-\t1\troot"
 
 #The result is a dictionary with a key for each group, classes, .. (the parent branch of the tree) that contains the names of the daughters branches.
 
