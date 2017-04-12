@@ -4,7 +4,7 @@ Project to convert a kaiju report file into a kraken report file.
 ## Requirements:
 - Python version 2.7
 - Awk 
-- Kaiju
+- Kaiju version 1.5.0
 
 ## Convert your file:
 To convert kaiju file, first you need to convert Kaiju's output file into a summary report file for a given taxonomic rank (Using Kaiju's tool, kaijuReport):
