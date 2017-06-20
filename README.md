@@ -7,12 +7,7 @@ Project to convert a kaiju report file into a kraken report file.
 - Kaiju version 1.5.0
 
 ## Convert your file:
-To convert kaiju file, first you need to convert Kaiju's output file into a summary report file for a given taxonomic rank (Using Kaiju's tool, kaijuReport):
-```
-kaijuReport -t nodes.dmp -n names.dmp -i kaiju.out -r species -l superkingdom,phylum,order,class,family,genus,species -o kaiju.out.summary
-```
-
-Secondly, you need to download the following scripts (available at https://github.com/JeremieMG/Kaiju_to_kraken):
+First, you need to download the following scripts (available at https://github.com/JeremieMG/Kaiju_to_kraken):
 - kraken_maker.py
 - taxa_parser.awk
 
@@ -23,6 +18,13 @@ chmod 755 [script]
 
 Finally, run this command to convert your kaiju report file into a kraken report file:
 ```
-./kraken_maker.py Kaiju.out.summary > [output]
+./kraken_maker.py -i kaiju.out -t nodes.dmp -n names.dmp > [output]
 ```
+
+or
+
+```
+./kraken_maker.py -h
+```
+
 ### Important note: Be sure that the both scripts are in the same folder.
