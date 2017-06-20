@@ -16,7 +16,7 @@ Then, to make this scripts executables, you have to run the hereafter command:
 chmod 755 [script]
 ```
 
-Finally, run this command to convert your kaiju report file into a kraken report file:
+Finally, run this command to convert your kaiju.out file into a kraken report file:
 ```
 ./kraken_maker.py -i kaiju.out -t nodes.dmp -n names.dmp > [output]
 ```
