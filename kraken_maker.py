@@ -2,10 +2,36 @@
 import sys
 import os
 import uuid
+import re
+from optparse import OptionParser
 
+#Options
+parser = OptionParser()
+parser.add_option("-i", dest="kaiju", help='Input kaiju.out file')
+parser.add_option("-t", dest="nodes", help='nodes.dmp file')
+parser.add_option("-n", dest="names", help='names.dmp file')
+(options, args) = parser.parse_args()
+kaiju_input = options.kaiju
+nodes_file = options.nodes
+names_file = options.names
+
+#First step, creatin of the id's dictionary for the taxonomic IDs
+id_name = open(names_file, "r")
+id_dico = {}
+name_dico = {}
+
+for line in id_name:
+    taxid, u_1, taxname, u_2, space, u_3, description, u_4 = line.strip().split("\t")
+    if description == "scientific name":
+        id_dico[taxname] = taxid
+        name_dico[taxid] = taxname
+
+#Creating summary File
+os.popen("kaijuReport -t %s -n %s -i %s -r species -l superkingdom,phylum,order,class,family,genus,species -o kaiju.out.summary"% (nodes_file,names_file, kaiju_input))
+
+#
 my_id = uuid.uuid1()
-kaiju_file = sys.argv[1]
-os.popen("./taxa_parser.awk %s > /tmp/names_%s.txt"% (kaiju_file,my_id))
+os.popen("./taxa_parser.awk kaiju.out.summary > /tmp/names_%s.txt"% (my_id))
 
 main = {}
 secondary = {}
@@ -23,7 +49,7 @@ def loop(x, y):
             space = y
             rank_display = ''.join((quaternary[element]))
             test = rank_display
-            print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + "unknow_ID\t" + space * "  " + element
+            print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + id_dico[element] + "\t" + space * "  " + element
             if main[element]:
                 space += 1
                 loop_2(element, space)
@@ -32,7 +58,7 @@ def loop_2(x, y):
     for element in main[x]:
         space = y
         rank_display = ''.join(quaternary[element])
-        print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + "unknow_ID\t" + space * "  " + element
+        print str(sum(tertiary[element])) + "\t" + str(sum(secondary[element])) + "\t" + str(sum(secondary[element])) + "\t" + rank_display.rstrip() + "\t" + id_dico[element] + "\t" + space * "  " + element
         if main[element]:
             space += 1
             loop(element, space)
@@ -81,3 +107,21 @@ for line in input_file:
 
 #(key root; number of starting space)
 loop('main',1)
+
+#Print the viruses classification
+virus_count = {}
+virus_list = []
+kaiju_report = open(kaiju_input, "r")
+
+for line in kaiju_report:
+    rstate, rname, ncbi = line.strip().split("\t")
+    if ncbi != "0" and re.search('virus', name_dico[ncbi]):
+        element = name_dico[ncbi]
+        number = "1"
+        if not element in virus_count:
+            virus_list.append(element)
+            virus_count[element] = []
+        virus_count[element].append(int(number))
+
+for virus in virus_list:
+    print str(sum(virus_count[virus])) + "\t" + str(sum(virus_count[virus])) + "\t" + str(sum(virus_count[virus])) + "\t" + "P" + "\t" + id_dico[virus] + "\t    " + virus
