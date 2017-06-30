@@ -95,12 +95,18 @@ for line in input_file:
         L = []
     else:
         percent, reads, name = line.strip().split("\t")
-        print str(percent) + "\t" + str(reads) + "\t" + str(reads) + "\tU\t0\t" + name
-        print str(percent) + "\t" + str(reads) + "\t" + str(reads) + "\t-\t1\troot"
+        reverse = 100 - float(percent)
+	print str(percent) + "\t" + str(reads) + "\t" + str(reads) + "\tU\t0\t" + name
+#        print str(reverse) + "\t" + str(reads) + "\t" + str(reads) + "\t-\t1\troot"
 
 #The result is a dictionary with a key for each group, classes, .. (the parent branch of the tree) that contains the names of the daughters branches.
 
+#print root
+a = []
+for i in secondary:
+	a.append(sum(secondary[i]))
 
+print str(reverse) + "\t" + str(sum(a)) + "\t" + str(sum(a)) + "\t-\t1\troot"
 
 #Print the tree. The parent branch (key) is printed. Afterwards, its daughters branches are printed. The daughter branch become a parent branch if it contains daughters branches.
 #When there is no more daughters branches, it returns to the previous parent and check for the daughters branches.
