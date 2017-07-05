@@ -10,10 +10,12 @@ parser = OptionParser()
 parser.add_option("-i", dest="kaiju", help='Input kaiju.out file')
 parser.add_option("-t", dest="nodes", help='nodes.dmp file')
 parser.add_option("-n", dest="names", help='names.dmp file')
+parser.add_option("-f", dest="id", help='id_nodes file')
 (options, args) = parser.parse_args()
 kaiju_input = options.kaiju
 nodes_file = options.nodes
 names_file = options.names
+id_nodes = options.id
 
 #First step, creatin of the id's dictionary for the taxonomic IDs
 id_name = open(names_file, "r")
@@ -40,7 +42,7 @@ quaternary = {}
 main["main"] = []
 input_file = open(("/tmp/names_%s.txt" %my_id),"r")
 L = []
-tax_names = ["U","D","P","C","O","F","G","S"]
+tax_names = ["U","D","P","C","O","F","G","S","-"]
 #Functions needed
 
 def loop(x, y):
@@ -115,19 +117,91 @@ print str(reverse) + "\t" + str(sum(a)) + "\t" + str(sum(a)) + "\t-\t1\troot"
 loop('main',1)
 
 #Print the viruses classification
+
+def virus_loop(x, y):
+    if virus[x]:
+        for element in virus[x]:
+            space = y
+            id = str(id_dico[element])
+	    rank_display = ''.join(d_4[id])
+            print str((float(sum(virus_count[element]))/ float(sum(secondary["Viruses"])))*float(sum(tertiary["Viruses"]))) + "\t" + str(sum(virus_count[element])) + "\t" + str(sum(virus_count[element])) + "\t" + rank_display.rstrip() + "\t" + id_dico[element] + "\t" + space * "  " + element
+            if virus[element]:
+                space += 1
+		virus_loop_2(element, space)
+
+def virus_loop_2(x, y):
+    if virus[x]:
+        for element in virus[x]:
+            space = y
+	    id = str(id_dico[element])
+            rank_display = ''.join(d_4[id])
+            print str((float(sum(virus_count[element]))/ float(sum(secondary["Viruses"])))*float(sum(tertiary["Viruses"]))) + "\t" + str(sum(virus_count[element])) + "\t" + str(sum(virus_count[element])) + "\t" + rank_display.rstrip() + "\t" + id_dico[element] + "\t" + space * "  " + element
+            if virus[element]:
+                space += 1
+		virus_loop(element, space)
+
+def virus_key(where, name):
+    if not name in virus:
+        virus[where].append(name)
+        virus[name] = []
+
+virus = {}
+virus["virus"] = []
 virus_count = {}
 virus_list = []
 kaiju_report = open(kaiju_input, "r")
+nodes = open(id_nodes, "r")
 
+d_2 = {}
+d_3 = {}
+d_4 = {}
+
+for line in nodes:
+	current, ref, rank = line.strip().split("\t")
+	d_3[current] = ref
+	d_2[current] = rank
+
+for rank in d_2:
+	if d_2[rank] == "species":
+		number = 7
+	elif d_2[rank] == "genus":
+		number = 6
+	elif d_2[rank] == "family":
+		number = 5
+	elif d_2[rank] == "order":
+		number = 4
+	elif d_2[rank] == "class":
+		number = 3
+	elif d_2[rank] == "phylum":
+		number = 2
+	else:
+		number = 8
+	if not rank in d_4:
+		d_4[rank] = []
+		d_4[rank].append(tax_names[number])
+
+L = []
 for line in kaiju_report:
-    rstate, rname, ncbi = line.strip().split("\t")
-    if ncbi != "0" and re.search('virus', name_dico[ncbi]):
-        element = name_dico[ncbi]
-        number = "1"
-        if not element in virus_count:
-            virus_list.append(element)
-            virus_count[element] = []
-        virus_count[element].append(int(number))
+	rstate, rname, ncbi = line.strip().split("\t")
+	if ncbi != "0" and re.search('virus', name_dico[ncbi]):
+		space = 1
+		while ncbi != "10239":
+			L.append(name_dico[ncbi])
+			ncbi = d_3[ncbi]
+		L.reverse()
+		element = 1
+		for i in L:
+			if element == 1:
+				truc = i
+				virus_key("virus",i)
+				element = 0
+			else:
+				virus_key(truc,i)
+				truc = i
+			L = []
+			if not i in virus_count:
+				virus_count[i] = []
+			virus_count[i].append(int("1"))
 
-for virus in virus_list:
-    print str(sum(virus_count[virus])) + "\t" + str(sum(virus_count[virus])) + "\t" + str(sum(virus_count[virus])) + "\t" + "P" + "\t" + id_dico[virus] + "\t    " + virus
+virus_loop('virus',2)
+
