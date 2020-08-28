@@ -27,7 +27,7 @@ or
 ```
 ./kraken_maker.py -h
 ```
-### Important note: Be sure that the both scripts are in the same folder.
+### Important note: Be sure that both scripts are in the same folder.
 
 ## Update id_nodes
 If you are updating your nodes.dmp file, please update the id_nodes file by running this command:
